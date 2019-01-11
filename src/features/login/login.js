@@ -1,9 +1,12 @@
 import React from "react";
-import Button from "antd/lib/button"
+import LoginForm from "../../components/AuthenticationWrapper/LoginForm";
 
-const Login = props => <div>
-    {props.text}
-    <Button type="primary">primary</Button>
-</div>;
+export default class LoginPage extends React.Component {
+    constructor(props) {
+        super(props);
+    }
 
-export default Login;
+    render() {
+        return <LoginForm/>
+    }
+}
