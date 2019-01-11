@@ -6,7 +6,11 @@ export default class LoginPage extends React.Component {
         super(props);
     }
 
+    handleSubmit = (values) => {
+        console.log(`---${values}`);
+    }
+
     render() {
-        return <LoginForm/>
+        return <LoginForm submit={this.handleSubmit}/>
     }
 }

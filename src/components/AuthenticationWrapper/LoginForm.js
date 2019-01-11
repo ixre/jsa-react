@@ -1,12 +1,18 @@
 import React from "react";
 import {Button, Checkbox, Form, Icon, Input} from 'antd';
 
-export default class LoginForm extends React.Component {
+class LoginForm extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 console.log('Received values of form: ', values);
+            } else {
+                this.props.submit(values);
             }
         });
     }
@@ -19,14 +25,14 @@ export default class LoginForm extends React.Component {
                     {getFieldDecorator('userName', {
                         rules: [{required: true, message: 'Please input your username!'}],
                     })(
-                        <Input prefix={<Icon type="user" style={{color: 'rgba(0,0,0,.25)'}}/>} placeholder="Username"/>
+                        <Input prefix={<Icon type="user" style={{color: 'rgba(0,0,0,.25)'}}/>} placeholder="用户名"/>
                     )}
                 </Form.Item>
                 <Form.Item>
                     {getFieldDecorator('password', {
                         rules: [{required: true, message: 'Please input your Password!'}],
                     })(
-                        <Input prefix={<Icon type="lock" style={{color: 'rgba(0,0,0,.25)'}}/>} type="password"
+                        <Input prefix={<Icon type="lock" style={{color: 'rgba(0,0,0,.25)'}}/>} type="密码"
                                placeholder="Password"/>
                     )}
                 </Form.Item>
@@ -47,3 +53,5 @@ export default class LoginForm extends React.Component {
         );
     }
 }
+
+export default Form.create()(LoginForm);
