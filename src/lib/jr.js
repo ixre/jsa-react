@@ -544,7 +544,7 @@ JR.prototype = {
     animation: {
         speedSet: {"slow": 10, "normal": 6, "fast": 3},
         _cmpStyle: function (e) {
-            var e = (e.raw?e.raw():e);
+            var e = (e.raw ? e.raw() : e);
             return e.currentStyle || document.defaultView.getComputedStyle(e, null);
         },
         _titAttr: function (attr) {
@@ -608,7 +608,7 @@ JR.prototype = {
                     for (var attr in attrMap) {
                         if (getFn(e, srcStyle, attr)() != attrMap[attr]) return;
                     }
-                    if(src && src instanceof Function)src.apply(elem, []);
+                    if (src && src instanceof Function) src.apply(elem, []);
                 };
             })(this, elem, callback);
             // 遍历执行动画
@@ -648,20 +648,20 @@ JR.prototype = {
         },
         fadeToggle: function (e, speed, callback) {
             var c = this.cmpStyle(e);
-            var src = (e.raw?e.raw():e);
+            var src = (e.raw ? e.raw() : e);
             var opacity = parseFloat(src.filters ?
                 src.filters["opacity"] : c["opacity"]);
             this.fadeTo(e, opacity < 1 ? 1 : 0, speed, callback);
         },
         slideDown: function (e, speed, callback) {
-            this.animate(e, {"height": (e.raw?e.raw():e).scrollHeight+ "px"}, speed, callback);
+            this.animate(e, {"height": (e.raw ? e.raw() : e).scrollHeight + "px"}, speed, callback);
         },
         slideUp: function (e, speed, callback) {
             this.animate(e, {"height": "0"}, speed, callback);
         },
         slideToggle: function (e, speed, callback) {
-            var height = (e.raw?e.raw():e).scrollHeight;
-            var offset = (e.raw?e.raw():e).offsetHeight;
+            var height = (e.raw ? e.raw() : e).scrollHeight;
+            var offset = (e.raw ? e.raw() : e).offsetHeight;
             this.animate(e, {
                 "height": (offset != height ? height : 0) + "px"
             }, speed, callback);
@@ -1099,7 +1099,9 @@ JR.prototype.ldScript = function (scriptUrl, loadfunc, errorfunc) {
 };
 
 var $jr = new JR().__init__();
-
+if (module) {
+    module.exports = $jr;
+}
 //初始化
 $jr.extend({
     $: function (el, tagName, attrs) {
@@ -1240,14 +1242,14 @@ $jr.extend({
 //Require.JS
 (function (r) {
     var o = $jr;
-    if (r){
-        r(function () {return o;});
-    }else{
+    if (r) {
+        r(function () {
+            return o;
+        });
+    } else {
         window.$b = o;
         window.jr = o;
     }
 })(window.define);
 
-if (window.module) {
-    module.exports = $jr;
-}
+

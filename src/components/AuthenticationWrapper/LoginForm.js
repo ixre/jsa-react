@@ -15,10 +15,13 @@ class LoginForm extends React.Component {
 
     render() {
         const {getFieldDecorator} = this.props.form;
+        const user = this.props.user;
+        const pwd = this.props.pwd;
         return (
             <Form onSubmit={this.handleSubmit} className="mod-login-form">
                 <Form.Item>
-                    {getFieldDecorator('userName', {
+                    {getFieldDecorator('user', {
+                        initialValue: user,
                         rules: [{required: true, message: 'Please input your username!'}],
                     })(
                         <Input prefix={<Icon type="user" style={{color: 'rgba(0,0,0,.25)'}}/>} placeholder="用户名"/>
@@ -26,6 +29,7 @@ class LoginForm extends React.Component {
                 </Form.Item>
                 <Form.Item>
                     {getFieldDecorator('password', {
+                        initialValue: pwd,
                         rules: [{required: true, message: 'Please input your Password!'}],
                     })(
                         <Input prefix={<Icon type="lock" style={{color: 'rgba(0,0,0,.25)'}}/>} type="password"
