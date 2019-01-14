@@ -1,5 +1,6 @@
-import React from "react";
-import LoginForm from "../../components/AuthenticationWrapper/LoginForm";
+import React, {Fragment} from 'react';
+import LoginForm from '../../components/AuthenticationWrapper/LoginForm';
+import '../../css/login.css';
 
 export default class LoginPage extends React.Component {
     constructor(props) {
@@ -11,6 +12,12 @@ export default class LoginPage extends React.Component {
     }
 
     render() {
-        return <LoginForm submit={this.handleSubmit}/>
+        return <Fragment>
+            <br/><br/><br/><br/>
+            <div className="mod-login-view">
+                <h2>JSA User Login: </h2><br/>
+                <LoginForm submit={this.handleSubmit}/>
+            </div>
+        </Fragment>;
     }
 }
