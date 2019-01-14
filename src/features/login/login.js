@@ -8,7 +8,7 @@ export default class LoginPage extends React.Component {
     }
 
     handleSubmit = (values) => {
-        console.log(`---${values}`);
+        console.log(values.password);
     }
 
     render() {

@@ -9,11 +9,7 @@ class LoginForm extends React.Component {
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
-            if (!err) {
-                console.log('Received values of form: ', values);
-            } else {
-                this.props.submit(values);
-            }
+            if (!err) this.props.submit(values);
         });
     }
 
@@ -44,7 +40,7 @@ class LoginForm extends React.Component {
                         <Checkbox>记住本次登陆</Checkbox>
                     )}
                     <a className="login-form-forgot" href="">忘记密码</a>
-                    <div class="login-form-login-btn">
+                    <div className="login-form-login-btn">
                         <Button type="primary" htmlType="submit" className="login-form-button">登陆</Button>
                     </div>
                 </Form.Item>
