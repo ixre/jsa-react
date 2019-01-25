@@ -1,6 +1,6 @@
 import React, {Fragment} from 'react';
 import LoginForm from '../../components/AuthenticationWrapper/LoginForm';
-import {http} from "../../base";
+import {http,fn} from "../../base";
 import '../../css/login.css';
 
 export default class LoginPage extends React.Component {
@@ -16,7 +16,7 @@ export default class LoginPage extends React.Component {
         const data = {"user": values.user, "pwd": values.password};
         console.log(values.password);
 
-        http.jsonPost("http://localhost:8080/console/api/user/login", data, function (r) {
+        http.jsonPost(fn.api("/login"), data, function (r) {
             console.log("---", JSON.stringify(r));
         });
 

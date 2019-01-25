@@ -901,7 +901,7 @@ JR.prototype.xhr = {
     request: function (_request, call, opt) {
         //执行初始化
         this.init();
-        var reqMethod = (_request.method || "GET").toUpperCase();
+        var method = (_request.method || "GET").toUpperCase();
 
         //请求范例
         //xhr.request({uri:"/",method:"POST",params:"",data:"text"},
@@ -909,13 +909,13 @@ JR.prototype.xhr = {
         //x为返回的数据*/
         var reqArgs = {
             //是否缓存
-            uri: this.getUrl(_request.uri, reqMethod, _request.random),
+            uri: this.getUrl(_request.uri, method, _request.random),
             //请求参数
             //method为"POST"时适用
             //格式如:'action=delete&id=123'
             params: _request.params || '',
             //请求的方法,POST和GET,HEAD
-            method: reqMethod,
+            method: method,
             //是否异步
             async: _request.async === false ? false : _request.async || true,
             //返回数据格式,Text|XML
