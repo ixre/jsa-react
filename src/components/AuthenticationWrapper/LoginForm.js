@@ -4,12 +4,18 @@ import {Button, Checkbox, Form, Icon, Input} from 'antd';
 class LoginForm extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {disabled: ""};
     }
 
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
-            if (!err) this.props.submit(values);
+            if (!err) {
+                this.setState({disabled: "disabled"});
+                this.props.submit(values, () => {
+                    this.setState({disabled: ""})
+                });
+            }
         });
     }
 
@@ -45,7 +51,8 @@ class LoginForm extends React.Component {
                     )}
                     <a className="login-form-forgot" href="">忘记密码</a>
                     <div className="login-form-login-btn">
-                        <Button type="primary" htmlType="submit" className="login-form-button">登陆</Button>
+                        <Button type="primary" htmlType="submit" className="login-form-button"
+                                disabled={this.state.disabled}>登陆</Button>
                     </div>
                 </Form.Item>
             </Form>

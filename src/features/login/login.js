@@ -12,12 +12,19 @@ export default class LoginPage extends React.Component {
         };
     }
 
-    handleSubmit = (values) => {
+    handleSubmit = (values,callback) => {
         const data = {"user": values.user, "pwd": values.password};
-        console.log(values.password);
-
+        let $this = this;
         http.jsonPost(fn.api("/login"), data, function (r) {
             console.log("---", JSON.stringify(r));
+            callback();
+            if(!r.code){
+                $this.props.history.push("/home");
+            }else{
+                console.log(`[ JSA][ Login]:${r}`);
+            }
+        },function(){
+            callback();
         });
 
     }

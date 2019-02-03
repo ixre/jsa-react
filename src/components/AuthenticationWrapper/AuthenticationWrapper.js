@@ -5,7 +5,7 @@ export class AuthenticationWrapper extends React.Component {
         super(props);
     }
     componentDidMount() {
-       // location.assign("#/login");
+      // location.assign("#/login");
     }
 
     render() {
