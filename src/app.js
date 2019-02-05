@@ -15,6 +15,7 @@ export default class App extends React.Component {
                 <div className="app-container">
                         <Switch>
                             <Route exact path='/' component={Index}/>
+                            <Route path='/home' component={Index}/>
                             <Route path='/profile/edit' component={EditProfile}/>
                         </Switch>
                 </div>

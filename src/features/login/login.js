@@ -2,7 +2,9 @@ import React, {Fragment} from 'react';
 import LoginForm from '../../components/AuthenticationWrapper/LoginForm';
 import {http,fn} from "../../base";
 import '../../css/login.css';
+import {observer,PropTypes} from "mobx-react";
 
+@observer
 export default class LoginPage extends React.Component {
     constructor(props) {
         super(props);
@@ -11,14 +13,19 @@ export default class LoginPage extends React.Component {
             pwd: "123456"
         };
     }
+    static contextTypes = {
+        store:PropTypes.observableObject
+    };
 
     handleSubmit = (values,callback) => {
-        const data = {"user": values.user, "pwd": values.password};
         let $this = this;
+        const {store} = this.context;
+        const data = {"user": values.user, "pwd": values.password};
         http.jsonPost(fn.api("/login"), data, function (r) {
-            console.log("---", JSON.stringify(r));
             callback();
             if(!r.code){
+                store.isLogin = true;
+                store.sessionID = r.data["SessionID"];
                 $this.props.history.push("/home");
             }else{
                 console.log(`[ JSA][ Login]:${r}`);

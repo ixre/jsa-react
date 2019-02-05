@@ -6,7 +6,7 @@ export default class Index extends React.Component {
         this.state = {};
     }
     render() {
-        return <div>...</div>;
+        return <div>JSA管理首页</div>;
     }
 }
 
