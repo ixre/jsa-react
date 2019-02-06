@@ -8,6 +8,7 @@ import {observer,PropTypes} from "mobx-react";
 export default class LoginPage extends React.Component {
     constructor(props) {
         super(props);
+        document.title = "JSA - Login";
         this.state = {
             user: "jarrysix",
             pwd: "123456"
@@ -33,7 +34,6 @@ export default class LoginPage extends React.Component {
         },function(){
             callback();
         });
-
     }
 
     render() {
