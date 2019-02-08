@@ -1,7 +1,7 @@
 import React, {Fragment} from 'react';
 import LoginForm from '../../components/AuthenticationWrapper/LoginForm';
 import {http,fn} from "../../base";
-import '../../css/login.css';
+import './login.css';
 import {observer,PropTypes} from "mobx-react";
 
 @observer
