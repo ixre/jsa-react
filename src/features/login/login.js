@@ -1,8 +1,9 @@
 import React, {Fragment} from 'react';
 import LoginForm from '../../components/AuthenticationWrapper/LoginForm';
-import {http,fn} from "../../base";
+import {fn, http} from "../../base";
 import './login.css';
-import {observer,PropTypes} from "mobx-react";
+import {observer, PropTypes} from "mobx-react";
+import Alert from "antd/es/alert";
 
 @observer
 export default class LoginPage extends React.Component {
@@ -11,27 +12,30 @@ export default class LoginPage extends React.Component {
         document.title = "JSA - Login";
         this.state = {
             user: "jarrysix",
-            pwd: "123456"
+            pwd: "123456",
+            err_msg:"",
         };
     }
+
     static contextTypes = {
-        store:PropTypes.observableObject
+        store: PropTypes.observableObject
     };
 
-    handleSubmit = (values,callback) => {
+    handleSubmit = (values, callback) => {
         let $this = this;
         const {store} = this.context;
         const data = {"user": values.user, "pwd": values.password};
         http.jsonPost(fn.api("/login"), data, function (r) {
             callback();
-            if(!r.code){
+            if (!r.code) {
                 store.isLogin = true;
                 store.sessionID = r.data["SessionID"];
                 $this.props.history.push("/home");
-            }else{
+            } else {
                 console.log(`[ JSA][ Login]:${r}`);
             }
-        },function(){
+        }, function (r) {
+            $this.setState({err_msg:r||"Oops! Connection timeout"});
             callback();
         });
     }
@@ -40,7 +44,11 @@ export default class LoginPage extends React.Component {
         return <Fragment>
             <br/><br/><br/><br/>
             <div className="mod-login-view">
-                <h2>JSA User Login: </h2><br/>
+                <h2>JSA User Login: </h2>
+                {this.state.err_msg != "" ?
+                    <Alert message={this.state.err_msg} type="warning" showIcon/> :
+                    null
+                }<br/>
                 <LoginForm submit={this.handleSubmit} user={this.state.user} pwd={this.state.pwd}/>
             </div>
         </Fragment>;

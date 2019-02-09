@@ -70,9 +70,9 @@ export class AppLayout extends React.Component {
                        collapsed={this.state.collapsed}>
                     <Logo name={this.state.name} version={this.state.version}/>
                     <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
-                        <Menu.Item key="1" onClick={this.assignUrl.bind(this, "/project")}>
+                        <Menu.Item key="1" onClick={this.assignUrl.bind(this, "/domain")}>
                             <Icon type="pie-chart"/>
-                            <span>项目</span>
+                            <span>域名</span>
                         </Menu.Item>
                         <SubMenu
                             key="sub1"

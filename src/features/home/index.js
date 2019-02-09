@@ -5,8 +5,13 @@ export default class Index extends React.Component {
         super(props);
         this.state = {};
     }
+
+    componentDidMount() {
+        this.props.history.push("/dashboard");
+    }
+
     render() {
-        return <div>JSA管理首页</div>;
+        return "";
     }
 }
 
