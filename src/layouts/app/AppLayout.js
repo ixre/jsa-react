@@ -66,6 +66,7 @@ export class AppLayout extends React.Component {
         return (
             <Layout style={{minHeight: '100vh'}}>
                 <Sider collapsible
+                       className="app-slider"
                        trigger={null}
                        collapsed={this.state.collapsed}>
                     <Logo name={this.state.name} version={this.state.version}/>
@@ -95,7 +96,7 @@ export class AppLayout extends React.Component {
                     </Menu>
                 </Sider>
                 <Layout>
-                    <Header style={{background: '#fff', padding: 0}}>
+                    <Header className="app-header">
                         <Row>
                             <Col span={6}>
                                 <Icon
@@ -107,9 +108,8 @@ export class AppLayout extends React.Component {
                                 <MyHeader user={this.state.user}/>
                             </Col>
                         </Row>
-
                     </Header>
-                    <Content style={{margin: '0 16px'}}>
+                    <Content className="app-content-box">
                         {/*<Breadcrumb style={{margin: '16px 0'}}>*/}
                         {/*    <Breadcrumb.Item>User</Breadcrumb.Item>*/}
                         {/*    <Breadcrumb.Item>Bill</Breadcrumb.Item>*/}

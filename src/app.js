@@ -2,7 +2,7 @@ import React from "react";
 import {Route, Switch} from "react-router-dom";
 import Index from "./features/home";
 import AppLayout from "./layouts/app";
-import Next from "./features/home/next"
+import Next from "./features/home/next";
 
 const Dashboard = React.lazy(() => import("./features/board"));
 const Domain = React.lazy(() => import( "./features/domain"));

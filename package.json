@@ -6,19 +6,19 @@
     "@babel/preset-env": "^7.2.3",
     "@babel/preset-react": "^7.0.0",
     "babel-plugin-import": "^1.11.0",
-    "less": "^2.7.3",
-    "parcel-bundler": "^1.11.0",
-    "react": "^16.7.0",
+    "less": "2.7.3",
     "mobx": "^5.9.0",
     "mobx-react": "^5.4.3",
-    "prop-types": "latest"
+    "parcel-bundler": "^1.11.0",
+    "prop-types": "^15.6.2",
+    "react": "^16.7.0"
   },
   "scripts": {
     "start": "parcel index.html",
     "build": "./build.sh"
   },
   "dependencies": {
-    "antd": "^3.13.1",
+    "antd": "^3.13.2",
     "react-dom": "^16.7.0",
     "react-router-dom": "^4.4.0-beta.6"
   }
