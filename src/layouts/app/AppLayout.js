@@ -5,6 +5,7 @@ import {Header as MyHeader} from "./Header"
 import "./AppLayout.css";
 import Col from "antd/es/grid/col";
 import Row from "antd/es/grid/row";
+import {http,fn} from "../../base";
 
 const {Header, Content, Footer, Sider} = Layout;
 const SubMenu = Menu.SubMenu;
@@ -29,13 +30,26 @@ export class AppLayout extends React.Component {
         super(props);
         this.state = {
             collapsed: false,
-            name: "JSA",
-            version: "0.1",
+            name: "",
+            version: "",
             // User info
             user: {
                 name: "admin"
             }
         };
+    }
+
+    componentDidMount() {
+        let t = this;
+        http.jsonPost(fn.api("/initial"), {}, function (r) {
+            t.setState({
+                name: r["sys_name"],
+                version: r["version"],
+                user: {
+                    name: r["nick_name"]
+                }
+            });
+        });
     }
 
     toggle = () => {
