@@ -4,8 +4,10 @@ import {fn, http} from "../../base";
 import './login.css';
 import {observer, PropTypes} from "mobx-react";
 import Alert from "antd/es/alert";
+import {withRouter} from "react-router-dom";
 
 @observer
+@withRouter
 export default class LoginPage extends React.Component {
     constructor(props) {
         super(props);

@@ -1,14 +1,15 @@
-import React, {Fragment} from "react";
+import React from "react";
 import ReactDOM from "react-dom";
 import "./css/page.less";
 import {HashRouter as Router, Route, Switch} from "react-router-dom";
 
 import {AuthenticationWrapper} from "./components/AuthenticationWrapper/AuthenticationWrapper";
 import AppState from "./stores/AppState";
-import {Provider} from "./components/Provider";
+import {LazyRoute, Provider} from "./components/common";
+//import Login from "./features/login/login"
+const Login = React.lazy(() => import("./features/login/login"));
 
 const App = React.lazy(() => import("./app"));
-const Login = React.lazy(() => import("./features/login/login"));
 let store = new AppState();
 const renderApp = () =>
     <AuthenticationWrapper>
@@ -16,11 +17,11 @@ const renderApp = () =>
     </AuthenticationWrapper>;
 
 ReactDOM.render(
-    <React.Suspense fallback={<Fragment/>}>
+    <React.Suspense fallback="">
         <Provider store={store}>
             <Router>
                 <Switch>
-                    <Route exact path='/login' component={Login}/>
+                    <LazyRoute exact path='/login' component={Login}/>
                     <Route render={renderApp}/>
                 </Switch>
             </Router>

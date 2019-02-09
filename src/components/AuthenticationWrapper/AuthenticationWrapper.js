@@ -1,8 +1,10 @@
 import React from "react"
-import {observer,PropTypes} from "mobx-react";
+import {observer, PropTypes} from "mobx-react";
 import {fn, http} from "../../base";
+import {withRouter} from "react-router-dom";
 
 @observer
+@withRouter
 export class AuthenticationWrapper extends React.Component {
     constructor(props) {
         super(props);
@@ -27,11 +29,11 @@ export class AuthenticationWrapper extends React.Component {
                     store.isLogin = true;
                     t.hasLogin();
                 } else {
-                    location.assign("#/login");
+                    t.props.history.push("/login");
                 }
             }, function (err) {
                 console.log(`[ XHR][ Check]: check session error : ${err}`);
-                location.assign("#/login");
+                t.props.history.push("/login");
             });
         } else {
             this.hasLogin();

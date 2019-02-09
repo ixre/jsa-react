@@ -7,7 +7,7 @@ import Col from "antd/es/grid/col";
 import Row from "antd/es/grid/row";
 import {http,fn} from "../../base";
 
-const {Header, Content, Footer, Sider} = Layout;
+const {Header, Content, Sider} = Layout;
 const SubMenu = Menu.SubMenu;
 
 let Logo = (props) => {
@@ -17,12 +17,7 @@ let Logo = (props) => {
         <i className="logo-version">v{props.version}</i>
     </div>;
 };
-let MyFooter = () => {
-    let y = new Date().getFullYear();
-    return <Footer style={{textAlign: 'center'}}>
-        JSA ©{y} by jarrysix
-    </Footer>;
-};
+
 
 @withRouter
 export class AppLayout extends React.Component {
@@ -70,8 +65,12 @@ export class AppLayout extends React.Component {
                        trigger={null}
                        collapsed={this.state.collapsed}>
                     <Logo name={this.state.name} version={this.state.version}/>
-                    <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
-                        <Menu.Item key="1" onClick={this.assignUrl.bind(this, "/domain")}>
+                    <Menu theme="dark" defaultSelectedKeys={['menu-board']} mode="inline">
+                        <Menu.Item key="menu-board" onClick={this.assignUrl.bind(this, "/dashboard")}>
+                            <Icon type="pie-chart"/>
+                            <span>面板首页</span>
+                        </Menu.Item>
+                        <Menu.Item key="menu-domain" onClick={this.assignUrl.bind(this, "/domain")}>
                             <Icon type="pie-chart"/>
                             <span>域名</span>
                         </Menu.Item>
@@ -119,7 +118,6 @@ export class AppLayout extends React.Component {
                         {/*</div>*/}
                         {this.props.children}
                     </Content>
-                    <MyFooter/>
                 </Layout>
             </Layout>
         );
