@@ -4,7 +4,14 @@ import Col from "antd/es/grid/col";
 import Row from "antd/es/grid/row";
 import {Dropdown, Icon, Menu, Modal} from 'antd';
 import {observer, PropTypes} from "mobx-react";
-import {http,fn} from "../../base";
+import {fn, http} from "../../base";
+
+const UserFlag = ({flag}) => {
+    if (flag & 2 == 2) {
+        return <i>(超级管理员)</i>;
+    }
+    return null;
+}
 
 @withRouter
 @observer
@@ -30,7 +37,7 @@ export class Header extends React.Component {
         let fh = () => {
             this.store.isLogin = false;
             let history = this.props.history;
-            http.jsonPost(fn.api("/user/logout"), {}, function () {
+            http.jsonPost(fn.api("/logout"), {}, function () {
                 history.push("/login");
             });
         };
@@ -60,19 +67,21 @@ export class Header extends React.Component {
     render() {
         return <React.Fragment>
             <Row type="flex" justify="start">
-                <Col span={6} offset={10}>
+                <Col span={10} offset={6}>
                     欢迎您：<Dropdown overlay={this.menu}>
-                    <a className="ant-dropdown-link" href="#">
-                        {this.props.user.name} <Icon type="down"/>
-                    </a>
+                    <span className="app-user-name">
+                        {this.props.user.name}
+                        <Icon type="down"/>
+                        <UserFlag flag={this.props.user.flag}/>
+                    </span>
                 </Dropdown>
                 </Col>
-                <Col span={4} align="right">
+                <Col span={3} align="left">
                     <a className="app-header-fork" href="http://github.com/jsix/jsa/fork" target="_blank">
                         <Icon type="fork"/>&nbsp;<span>Fork</span>
                     </a>
                 </Col>
-                <Col span={4} align="center">
+                <Col span={3} align="center">
                     <a className="app-header-fork" href="http://github.com/jsix/jsa#jsa" target="_blank">
                         <span>帮助?</span>
                     </a>
@@ -80,7 +89,6 @@ export class Header extends React.Component {
             </Row>
         </React.Fragment>;
     }
-
 }
 
 

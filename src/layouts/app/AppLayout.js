@@ -5,14 +5,14 @@ import {Header as MyHeader} from "./Header"
 import "./AppLayout.css";
 import Col from "antd/es/grid/col";
 import Row from "antd/es/grid/row";
-import {http,fn} from "../../base";
+import {fn, http} from "../../base";
 
 const {Header, Content, Sider} = Layout;
 const SubMenu = Menu.SubMenu;
 
 let Logo = (props) => {
     return <div className="logo">
-        <Icon className="logo-icon" type="slack-square" theme="filled"/>
+        <Icon className="logo-icon" type="compass"/>
         <span className="logo-txt">{props.name}</span>
         <i className="logo-version">v{props.version}</i>
     </div>;
@@ -40,9 +40,7 @@ export class AppLayout extends React.Component {
             t.setState({
                 name: r["sys_name"],
                 version: r["version"],
-                user: {
-                    name: r["nick_name"]
-                }
+                user: r["user"]
             });
         });
     }
@@ -67,26 +65,30 @@ export class AppLayout extends React.Component {
                     <Logo name={this.state.name} version={this.state.version}/>
                     <Menu theme="dark" defaultSelectedKeys={['menu-board']} mode="inline">
                         <Menu.Item key="menu-board" onClick={this.assignUrl.bind(this, "/dashboard")}>
-                            <Icon type="pie-chart"/>
+                            <Icon type="home"/>
                             <span>面板首页</span>
                         </Menu.Item>
-                        <Menu.Item key="menu-domain" onClick={this.assignUrl.bind(this, "/domain")}>
-                            <Icon type="pie-chart"/>
+                        <Menu.Item key="menu-domains" onClick={this.assignUrl.bind(this, "/domain")}>
+                            <Icon type="menu-unfold" />
                             <span>域名</span>
+                        </Menu.Item>
+                        <Menu.Item key="menu-users" onClick={this.assignUrl.bind(this, "/users")}>
+                            <Icon type="user"/>
+                            <span>用户</span>
                         </Menu.Item>
                         <SubMenu
                             key="sub1"
-                            title={<span><Icon type="user"/><span>报表</span></span>}>
+                            title={<span><Icon type="pie-chart"/><span>报表</span></span>}>
                             <Menu.Item key="3" onClick={this.assignUrl.bind(this, "/home/next")}>点击量统计</Menu.Item>
                             <Menu.Item key="4" onClick={this.assignUrl.bind(this, "/home/next")}>月分析统计</Menu.Item>
                             <Menu.Item key="5" onClick={this.assignUrl.bind(this, "/home/next")}>日分析统计</Menu.Item>
                         </SubMenu>
                         <Menu.Item key="menu-api" onClick={this.assignUrl.bind(this, "/api")}>
-                            <Icon type="pie-chart"/>
+                            <Icon type="api"/>
                             <span>开放API</span>
                         </Menu.Item>
                         <SubMenu key="sub2"
-                                 title={<span><Icon type="team"/><span>系统设置</span></span>}>
+                                 title={<span><Icon type="setting" /><span>系统设置</span></span>}>
                             <Menu.Item key="sub-domain-2"
                                        onClick={this.assignUrl.bind(this, "/domain")}>域名绑定</Menu.Item>
                             <Menu.Item key="6" onClick={this.assignUrl.bind(this, "/profile/edit")}>资料修改</Menu.Item>

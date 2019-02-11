@@ -2,12 +2,15 @@
 
 .logo{color:#FFF;font-size:150%;padding:5px 15px;height:60px;
     line-height:60px;overflow:hidden;}
-.logo i.logo-icon{font-size:160%;margin:3px 0 0 5px;}
+.logo i.logo-icon{font-size:140%;margin:3px 0 0 5px;}
 .logo i.logo-version{font-size:75%;font-style:normal;}
 .logo .logo-txt{padding:0 15px;letter-spacing:2px;}
 
-.app-header{background:#FFF;padding:0;width:100%;}
+.app-header{background:#FFF;padding:0;width:100%;border-bottom:solid 1px #ddd;}
 .app-slider{}
 .app-header-fork{color:#000;}
 .app-content-box{height: calc(100vh - 140px);overflow:auto;
     background:#FFF;padding:15px;}
+
+.app-user-name{color:#06c;}
+.app-user-name i{color:#666;font-style:normal;font-size:90%;}

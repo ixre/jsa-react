@@ -6,6 +6,7 @@ import {observer, PropTypes} from "mobx-react";
 import Alert from "antd/es/alert";
 import {withRouter} from "react-router-dom";
 
+
 @observer
 @withRouter
 export default class LoginPage extends React.Component {
@@ -13,9 +14,9 @@ export default class LoginPage extends React.Component {
         super(props);
         document.title = "JSA - Login";
         this.state = {
-            user: "jarrysix",
+            user: "admin",
             pwd: "123456",
-            err_msg:"",
+            err_msg: "",
         };
     }
 
@@ -26,18 +27,21 @@ export default class LoginPage extends React.Component {
     handleSubmit = (values, callback) => {
         let $this = this;
         const {store} = this.context;
-        const data = {"user": values.user, "pwd": values.password};
+        const data = {"user": values.user, "pwd": fn.pwd(values.password)};
         http.jsonPost(fn.api("/login"), data, function (r) {
             callback();
             if (!r.code) {
                 store.isLogin = true;
                 store.sessionID = r.data["SessionID"];
+                store.user = {
+                    isSuper: r.data["SuperUser"] == "1"
+                };
                 $this.props.history.push("/home");
             } else {
-                console.log(`[ JSA][ Login]:${r}`);
+                $this.setState({err_msg: r["err_msg"]});
             }
         }, function (r) {
-            $this.setState({err_msg:r||"Oops! Connection timeout"});
+            $this.setState({err_msg: r || "Oops! Connection timeout"});
             callback();
         });
     }
