@@ -60,7 +60,11 @@ export default class GridTable extends React.Component {
                 pagination,
             });
         };
-        this.props.dataFetch(params, callback);
+        if(this.props.dataFetch) {
+            this.props.dataFetch(params, callback);
+        }else{
+            callback({total:0,rows:[]});
+        }
     }
 
     componentDidMount() {
