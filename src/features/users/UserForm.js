@@ -3,6 +3,7 @@ import {Form} from "antd";
 import Input from "antd/es/input";
 import Button from "antd/es/button";
 import PropTypes from "prop-types";
+import Switch from "antd/es/switch";
 
 const formItemLayout = {
     labelCol: {span: 4},
@@ -15,8 +16,12 @@ class UserForm extends React.Component {
     }
 
     static propTypes = {
+        values: PropTypes.object,
         saveText: PropTypes.string,
     }
+    static defaultProps = {
+        values: {}
+    };
     // 验证密码
     validatePassword = (rule, value, callback) => {
         callback();
@@ -39,7 +44,7 @@ class UserForm extends React.Component {
             <Form onSubmit={this.handleSubmit.bind(this)}>
                 <Form.Item {...formItemLayout} label="用户">
                     {getFieldDecorator('user', {
-                        initialValue: this.props["user"],
+                        initialValue: this.props.values["user"],
                         rules: [{
                             required: true,
                             message: '请填写用户',
@@ -51,7 +56,7 @@ class UserForm extends React.Component {
 
                 <Form.Item {...formItemLayout} label="密码">
                     {getFieldDecorator('pwd', {
-                        initialValue: this.props["pwd"],
+                        initialValue: this.props.values["pwd"],
                         rules: [{
                             required: true,
                             message: '请填写密码',
@@ -63,9 +68,21 @@ class UserForm extends React.Component {
                     )}
                 </Form.Item>
 
+                <Form.Item {...formItemLayout} label="昵称">
+                    {getFieldDecorator('name', {
+                        initialValue: this.props.values["name"],
+                        rules: [{
+                            required: true,
+                            message: '请填写昵称',
+                        }],
+                    })(
+                        <Input/>
+                    )}
+                </Form.Item>
+
                 <Form.Item {...formItemLayout} label="电子邮箱">
                     {getFieldDecorator('email', {
-                        initialValue: this.props["email"],
+                        initialValue: this.props.values["email"],
                         rules: [
                             {type: 'email', message: "不是有效的电子邮箱"},
                             {
@@ -74,6 +91,15 @@ class UserForm extends React.Component {
                             }],
                     })(
                         <Input placeholder=""/>
+                    )}
+                </Form.Item>
+
+                <Form.Item{...formItemLayout} label="是否启用">
+                    {getFieldDecorator('enabled', {
+                        initialValue: this.props.values["enabled"],
+                        valuePropName: 'checked'
+                    })(
+                        <Switch/>
                     )}
                 </Form.Item>
 

@@ -2,6 +2,7 @@ import React from "react";
 import UserForm from "./UserForm";
 import {fn, http} from "../../base";
 import {Modal} from "../../components/common";
+import {USER_FLAG} from "./Users";
 
 export class EditUser extends React.Component {
     constructor(props) {
@@ -14,28 +15,29 @@ export class EditUser extends React.Component {
     componentDidMount() {
         let key = this.props.match.params.id;
         let t = this;
-        http.jsonPost(fn.api("/user/get"), {user: key}, function (r) {
+        http.jsonPost(fn.api("/user/get?user=" + key), {}, function (r) {
+            r.enabled = (r.flag & USER_FLAG.Enabled) == USER_FLAG.Enabled;
             t.setState({value: r});
         });
     }
 
     onSubmit(values) {
         let t = this;
-        http.jsonPost(fn.api("/user/save", values, function (r) {
+        values.flag = 0;
+        http.jsonPost(fn.api("/user/save"), values, function (r) {
             if (!r.code) {
-                Modal.alert("success", "保存成功", function () {
+                Modal.success("提示", "保存成功", () => {
                     t.props.history.push("..");
                 });
             } else {
-                Modal.alert("success", "保存失败:" + r["err_msg"]);
+                Modal.error("提示", "保存失败:" + r["err_msg"]);
             }
-        }))
-        console.log('Received values of form: ', values);
+        });
     }
 
     render() {
         return <React.Fragment>
-            <UserForm value={this.value} saveText="保存" onSubmit={this.onSubmit.bind(this)}/>
+            <UserForm values={this.state.value} saveText="保存" onSubmit={this.onSubmit.bind(this)}/>
         </React.Fragment>;
     }
 }

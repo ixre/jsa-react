@@ -15,14 +15,13 @@ export class CreateUser extends React.Component {
         let t = this;
         http.jsonPost(fn.api("/user/save", values, function (r) {
             if (!r.code) {
-                Modal.alert("success", "新增成功", function () {
+                Modal.success("提示", "新增成功", () => {
                     t.props.history.push("..");
                 });
             } else {
-                Modal.alert("success", "新增失败:" + r["err_msg"]);
+                Modal.error("新增失败:" + r["err_msg"]);
             }
-        }))
-        console.log('Received values of form: ', values);
+        }));
     }
 
     render() {

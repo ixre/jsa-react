@@ -12,4 +12,20 @@ export class Modal {
             cancelText: options.cancelText || '取消',
         });
     }
+
+    static success(title, content, callback) {
+        M.success({
+            title: title,
+            content: content,
+            onOk: callback,
+        });
+    }
+
+    static error(title, content, callback) {
+        M.error({
+            title: title,
+            content: content,
+            onOk: callback,
+        });
+    }
 }

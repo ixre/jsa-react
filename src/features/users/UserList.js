@@ -11,13 +11,11 @@ import {USER_FLAG} from "./Users";
 
 @withRouter
 export class UserList extends React.Component {
-
     constructor(props) {
         super(props);
         this.state = {
             reload: false,
             delLoading: false,
-            rowKey: r => r.name,
             // 选中的行
             checkedRowKeys: "",
             searchValue: "",
@@ -29,23 +27,28 @@ export class UserList extends React.Component {
             },
             getCheckboxProps: record => ({
                 disabled: (record.flag & USER_FLAG.Super) === USER_FLAG.Super,
-                name: this.state.rowKey(record),
+                name: this.rowKey(record),
             }),
         };
     }
 
     // 定义列
+    rowKey = r => r.user;
     searchHolder = "用户/邮箱";
     columns = [{
         title: '用户',
-        dataIndex: 'name',
+        dataIndex: 'user',
         width: '30%',
-        render: (name, row) => {
-            return <span>{name}&nbsp;
+        render: (user, row) => {
+            return <span>{user}&nbsp;
                 {(row.flag & USER_FLAG.Super) == USER_FLAG.Super ?
                     <Tag color="blue">管理员</Tag> : null}
         </span>;
         }
+    }, {
+        title: '昵称',
+        dataIndex: 'name',
+        width: '20%'
     }, {
         title: '邮箱',
         dataIndex: 'email',
@@ -53,7 +56,7 @@ export class UserList extends React.Component {
     }, {
         title: '状态',
         dataIndex: 'flag',
-        width: '20%',
+        width: '10%',
         render: (flag) => {
             if ((flag & USER_FLAG.Enabled) == USER_FLAG.Enabled) {
                 if ((flag & USER_FLAG.Activated) == USER_FLAG.Activated) {
@@ -68,7 +71,7 @@ export class UserList extends React.Component {
         dataIndex: '',
         render: (_, row) => {
             // <Divider type="vertical"/>
-            return <a href="javascript:;" onClick={this.onEdit.bind(this, row.name)}>更新</a>;
+            return <a href="javascript:;" onClick={this.onEdit.bind(this, this.rowKey(row))}>更新</a>;
         }
     }];
 
@@ -124,9 +127,9 @@ export class UserList extends React.Component {
     }
 
     render() {
-        const {searchHolder, rowSelection, columns} = this;
+        const {searchHolder, rowSelection, columns, rowKey} = this;
         const {reload, delLoading} = this.state;
-        const {rowKey, checkedRowKeys} = this.state;
+        const {checkedRowKeys} = this.state;
         const hasChecked = checkedRowKeys != "";
         return <React.Fragment>
             <div className="gra-control-bar">
