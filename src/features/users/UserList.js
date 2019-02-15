@@ -3,10 +3,10 @@ import GridTable from "../../components/grid/GridTable";
 import Button from "antd/es/button";
 import {fn, http} from "../../base";
 import Tag from "antd/es/tag";
-import Divider from "antd/es/divider";
 import Search from "antd/es/input/Search";
 import {Modal} from "../../components/common";
 import {withRouter} from "react-router-dom";
+import {USER_FLAG} from "./Users";
 
 
 @withRouter
@@ -28,7 +28,7 @@ export class UserList extends React.Component {
                 this.setState({checkedRowKeys: selectedRowKeys});
             },
             getCheckboxProps: record => ({
-                disabled: (record.flag & 2) === 2,
+                disabled: (record.flag & USER_FLAG.Super) === USER_FLAG.Super,
                 name: this.state.rowKey(record),
             }),
         };
@@ -42,7 +42,8 @@ export class UserList extends React.Component {
         width: '30%',
         render: (name, row) => {
             return <span>{name}&nbsp;
-                {(row.flag & 2) == 2 ? <Tag color="blue">管理员</Tag> : null}
+                {(row.flag & USER_FLAG.Super) == USER_FLAG.Super ?
+                    <Tag color="blue">管理员</Tag> : null}
         </span>;
         }
     }, {
@@ -50,27 +51,24 @@ export class UserList extends React.Component {
         dataIndex: 'email',
         width: '20%'
     }, {
-        title: '类型',
+        title: '状态',
         dataIndex: 'flag',
         width: '20%',
         render: (flag) => {
-            return flag;
+            if ((flag & USER_FLAG.Enabled) == USER_FLAG.Enabled) {
+                if ((flag & USER_FLAG.Activated) == USER_FLAG.Activated) {
+                    return <Tag color="blue">已激活</Tag>;
+                }
+                return <Tag color="silver">待激活</Tag>;
+            }
+            return <Tag color="red">已停用</Tag>;
         }
     }, {
         title: '操作',
         dataIndex: '',
         render: (_, row) => {
-            if ((row.flag & 2) == 2) {
-                return <a href="javascript:;" onClick={this.onEdit.bind(this,row.name)}>修改</a>;
-            }
-            return <span>{
-                (row.flag & 1) == 1 ?
-                    <a href="javascript:;" onClick={this.onEdit.bind(this,row.name)}>停用</a> :
-                    <a href="javascript:;">启用</a>
-            }
-                <Divider type="vertical"/>
-            <a href="javascript:;" onClick={this.onEdit.bind(this,row.name)}>修改</a>
-        </span>;
+            // <Divider type="vertical"/>
+            return <a href="javascript:;" onClick={this.onEdit.bind(this, row.name)}>更新</a>;
         }
     }];
 
@@ -103,11 +101,11 @@ export class UserList extends React.Component {
     }
 
     onCreate() {
-        this.props.history.push("/user/new");
+        this.props.history.push("/users/new");
     }
 
-    onEdit(key){
-        this.props.history.push("/user/edit?key="+key);
+    onEdit(key) {
+        this.props.history.push("/users/edit/" + key);
     }
 
     onDelete() {
@@ -126,7 +124,7 @@ export class UserList extends React.Component {
     }
 
     render() {
-        const{searchHolder,rowSelection,columns} = this;
+        const {searchHolder, rowSelection, columns} = this;
         const {reload, delLoading} = this.state;
         const {rowKey, checkedRowKeys} = this.state;
         const hasChecked = checkedRowKeys != "";

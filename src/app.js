@@ -5,12 +5,10 @@ import AppLayout from "./layouts/app";
 import Next from "./features/home/next";
 import {LazyRoute} from "./components/common";
 
-
 const Dashboard = React.lazy(() => import("./features/board"));
 const Domain = React.lazy(() => import( "./features/domain"));
 const EditProfile = React.lazy(() => import("./features/profile/EditProfile"));
-const UserList = React.lazy(() => import( "./features/users"));
-
+const Users = React.lazy(() => import( "./features/users"));
 export default class App extends React.Component {
     constructor(props) {
         super(props);
@@ -25,7 +23,7 @@ export default class App extends React.Component {
                     <Route path='/home' component={Index}/>
                     <LazyRoute path='/dashboard' component={Dashboard}/>
                     <LazyRoute path='/domain' component={Domain}/>
-                    <LazyRoute path='/users' component={UserList}/>
+                    <LazyRoute path='/users' component={Users}/>
                     <Route path='/home/next' component={Next}/>
                     <LazyRoute path='/profile/edit' component={EditProfile}/>
                 </Switch>

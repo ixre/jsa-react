@@ -1,3 +1,5 @@
-import {UserList} from "./UserList";
+export {UserList} from "./UserList";
+export {USER_FLAG} from "./Users";
+import {Users} from "./Users";
 
-export default UserList;
+export default Users;

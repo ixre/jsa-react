@@ -6,6 +6,7 @@ import "./AppLayout.css";
 import Col from "antd/es/grid/col";
 import Row from "antd/es/grid/row";
 import {fn, http} from "../../base";
+import AppBreadcrumb from "./AppBreadcrumb";
 
 const {Header, Content, Sider} = Layout;
 const SubMenu = Menu.SubMenu;
@@ -118,6 +119,7 @@ export class AppLayout extends React.Component {
                         {/*<div style={{padding: 24, background: '#fff', minHeight: 360}}>*/}
                         {/*    Bill is a cat.*/}
                         {/*</div>*/}
+                        <AppBreadcrumb/><br />
                         {this.props.children}
                     </Content>
                 </Layout>
