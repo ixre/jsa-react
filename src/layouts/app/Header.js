@@ -67,7 +67,7 @@ export class Header extends React.Component {
     render() {
         return <React.Fragment>
             <Row type="flex" justify="start">
-                <Col span={10} offset={6}>
+                <Col span={10} offset={8}>
                     欢迎您：<Dropdown overlay={this.menu}>
                     <span className="app-user-name">
                         {this.props.user.name}
@@ -81,7 +81,7 @@ export class Header extends React.Component {
                         <Icon type="fork"/>&nbsp;<span>Fork</span>
                     </a>
                 </Col>
-                <Col span={3} align="center">
+                <Col span={3} align="left">
                     <a className="app-header-fork" href="http://github.com/jsix/jsa#jsa" target="_blank">
                         <span>帮助?</span>
                     </a>

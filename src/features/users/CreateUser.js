@@ -2,18 +2,22 @@ import React from "react";
 import UserForm from "./UserForm";
 import {fn, http} from "../../base";
 import {Modal} from "../../components/common";
+import {USER_FLAG} from "./Users";
 
 export class CreateUser extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            value: {}
+            value: {
+                flag:USER_FLAG.Enabled
+            }
         };
     }
 
     onSubmit(values) {
         let t = this;
-        http.jsonPost(fn.api("/user/save", values, function (r) {
+        values.flag = 0;
+        http.jsonPost(fn.api("/user/save"), values, function (r) {
             if (!r.code) {
                 Modal.success("提示", "新增成功", () => {
                     t.props.history.push("..");
@@ -21,7 +25,7 @@ export class CreateUser extends React.Component {
             } else {
                 Modal.error("新增失败:" + r["err_msg"]);
             }
-        }));
+        });
     }
 
     render() {

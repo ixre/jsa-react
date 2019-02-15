@@ -106,7 +106,7 @@ export class AppLayout extends React.Component {
                                     type={this.state.collapsed ? 'menu-unfold' : 'menu-fold'}
                                     onClick={this.toggle}
                                 /></Col>
-                            <Col span={12} offset={6}>
+                            <Col>
                                 <MyHeader user={this.state.user}/>
                             </Col>
                         </Row>
