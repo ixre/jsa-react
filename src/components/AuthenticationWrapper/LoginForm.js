@@ -28,7 +28,7 @@ class LoginForm extends React.Component {
                 <Form.Item>
                     {getFieldDecorator('user', {
                         initialValue: user,
-                        rules: [{required: true, message: 'Please input your username!'}],
+                        rules: [{required: true, message: '请输入用户'}],
                     })(
                         <Input prefix={<Icon type="user" style={{color: 'rgba(0,0,0,.25)'}}/>} placeholder="用户名"/>
                     )}
@@ -36,7 +36,7 @@ class LoginForm extends React.Component {
                 <Form.Item>
                     {getFieldDecorator('password', {
                         initialValue: pwd,
-                        rules: [{required: true, message: 'Please input your Password!'}],
+                        rules: [{required: true, message: '请输入密码'}],
                     })(
                         <Input prefix={<Icon type="lock" style={{color: 'rgba(0,0,0,.25)'}}/>} type="password"
                                placeholder="密码"/>
@@ -45,9 +45,9 @@ class LoginForm extends React.Component {
                 <Form.Item>
                     {getFieldDecorator('remember', {
                         valuePropName: 'checked',
-                        initialValue: true,
+                        initialValue: !true,
                     })(
-                        <Checkbox>记住本次登陆</Checkbox>
+                        <Checkbox>记住用户</Checkbox>
                     )}
                     <a className="login-form-forgot" href="">忘记密码</a>
                     <div className="login-form-login-btn">

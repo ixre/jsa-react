@@ -5,6 +5,7 @@ import './login.css';
 import {observer, PropTypes} from "mobx-react";
 import Alert from "antd/es/alert";
 import {withRouter} from "react-router-dom";
+import {Icon} from "antd";
 
 
 @observer
@@ -14,8 +15,8 @@ export default class LoginPage extends React.Component {
         super(props);
         document.title = "JSA - Login";
         this.state = {
-            user: "admin",
-            pwd: "123456",
+            user: "",
+            pwd: "",
             err_msg: "",
         };
     }
@@ -50,13 +51,19 @@ export default class LoginPage extends React.Component {
         return <Fragment>
             <br/><br/><br/><br/>
             <div className="mod-login-view">
-                <h2>JSA User Login: </h2>
+                <h2><Icon className="logo-icon" type="compass"/>用户登入</h2>
+
                 {this.state.err_msg != "" ?
                     <Alert message={this.state.err_msg} type="warning" showIcon/> :
                     null
-                }<br/>
+                }
                 <LoginForm submit={this.handleSubmit} user={this.state.user} pwd={this.state.pwd}/>
+
+                <center><i className="mod-login-account">
+                    默认管理账号：admin / 密码：123456
+                </i></center><br />
             </div>
+
         </Fragment>;
     }
 }
