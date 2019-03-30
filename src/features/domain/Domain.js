@@ -1,29 +1,31 @@
-import React from "react";
-import GridTable from "../../components/grid/GridTable";
+import * as React from "react";
+import {DomainList} from "./DomainList";
+import {Route, Switch} from "react-router-dom";
+import {CreateDomain} from "./CreateDomain";
+import {EditDomain} from "./EditDomain";
 
-const columns = [{
-    title: 'Name',
-    dataIndex: 'name',
-}, {
-    title: 'Age',
-    dataIndex: 'age',
-}, {
-    title: 'Address',
-    dataIndex: 'address',
-}];
 
-const data = [];
-for (let i = 0; i < 46; i++) {
-    data.push({
-        key: i,
-        name: `Edward King ${i}`,
-        age: 32,
-        address: `London, Park Lane no. ${i}`,
-    });
-}
+/// The state of domain
+export const DomainState = {
+    Normal: 1,
+    Stopped: 2,
+    Paused: 3,
+};
+
+export const DomainFlag = {
+    /// If flag contain 2,System will open statistics
+    /// function for domain.
+    Stat: 2,
+};
 
 export class Domain extends React.Component {
     render() {
-        return <GridTable columns={columns} dataSource={data}/>
+        return <React.Fragment>
+            <Switch>
+                <Route path="/**/new" component={CreateDomain}/>
+                <Route path="/**/edit/:id" component={EditDomain}/>>
+                <Route path="" component={DomainList}/>
+            </Switch>
+        </React.Fragment>;
     }
 }

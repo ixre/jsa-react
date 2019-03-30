@@ -29,16 +29,20 @@
  * 2016-12-10  重构代码,添加FN
  * 2016-12-17  去掉toJson
  * 2017-06-30  $fn.text()方法
+ * 2019-03-25  $.animate方法
+
  ----------------------------------------------*/
 
 function JR() {
-    this.VERSION = '3.2';       //版本号
-    this.WORKPATH = '';         //工作路径
+    this.VERSION = '3.3'; //版本号
+    this.WORKPATH = ''; //工作路径
     this._Extend_PROTOTYPE = true;
     this._eventArray = ["abort", "blur", "change", "click", "dblclick",
         "error", "focus", "keydown", "keypress", "keyup", "load",
-        "mousedown", "mousemove", "mouseout", "mouseover",
-        "mouseup", "reset", "resize", "select", "submit", "unload"];
+        "mousedown", "mousemove", "mouseout", "mouseover", "mouseenter",
+        "mouseup", "touchstart", "touchmove", "touchend", "touchcancel",
+        "reset", "resize", "select", "submit", "unload"
+    ];
 
     /*** 初始化 ***/
     this.__init__ = function () {
@@ -91,6 +95,31 @@ function JR() {
                 }
                 return false;
             };
+
+            HTMLElement.prototype.computedStyle = function () {
+                return this.currentStyle || document.defaultView.getComputedStyle(this, null);
+            };
+            HTMLElement.prototype.setStyle = function (props) {
+                var old = {};
+                for (var i in props) {
+                    old[i] = this.style[i];
+                    this.style[i] = props[i];
+                }
+                return old;
+            };
+            HTMLElement.prototype.restoreStyle = function (props) {
+                for (var i in props) this.style[i] = props[i];
+            };
+            HTMLElement.prototype.realEval = function (expr) {
+                var old = this.setStyle({
+                    "display": "inherit",
+                    "visibility": "hidden", "position": "absolute",
+                    "height": "auto", width: "auto"
+                });
+                var value = expr(this);
+                this.restoreStyle(old);
+                return value;
+            };
         }
 
         //IE7及以下未内置JSON,可引用json2.js
@@ -113,7 +142,8 @@ JR.prototype = {
     },
     // 获取路径
     path: function () {
-        var d = document.domain, uri = location.href;
+        var d = document.domain,
+            uri = location.href;
         d = uri.substring(uri.indexOf(d) + d.length);
         /*if has port*/
         return d.substring(d.indexOf("/"));
@@ -181,8 +211,7 @@ JR.prototype = {
         // 根据表达式查找对象,parent为父对象
         finds: function (expr, parent) {
             expr = expr.replace(/^\s|\s$/g, '').replace(/\s+/, ' ');
-            var arr = parent && parent.nodeName ?
-                [parent] : (parent || [document]);
+            var arr = parent && parent.nodeName ? [parent] : (parent || [document]);
             var expArr = expr.split(' ');
             return this.walk(arr, expArr, 0)
         },
@@ -235,7 +264,8 @@ JR.prototype = {
             'uncheck': ['checked', false],
         },
         aniFn: ["fadeIn", "fadeOut", "fadeTo", "fadeToggle",
-            "slideUp", "slideDown", "slideToggle"],
+            "slideUp", "slideDown", "slideToggle"
+        ],
         // 将元素包装为FN
         _fn: function (expression) {
             return this.create(expression, this.g);
@@ -259,12 +289,12 @@ JR.prototype = {
             } else if (e.nodeName) {
                 this.eleList = [e];
             }
-            //注册所有事件
+            //注册所有事件,如：this.mouseover(function(){},false);
             var ptr = this;
             this.g.each(this.g._eventArray, function (i, e) {
                 ptr[e] = (function (e) {
                     return function (fn, attach) {
-                        return ptr.event(e, fn, attach);
+                        return ptr.event(e, fn, attach != false);
                     };
                 })(e);
             });
@@ -425,8 +455,9 @@ JR.prototype = {
             return this;
         },
         _setAttr: function (attr, v) {
-            var b = typeof (v) == "boolean" ||
+            var b = attr == "value" || typeof (v) == "boolean" ||
                 attr.indexOf("inner") == 0 ||
+                attr.indexOf("scroll") == 0 ||
                 attr.indexOf("offset") == 0;
             return this._rawCaller(function (e) {
                 b ? e[attr] = v : e.setAttribute(attr, v);
@@ -543,10 +574,11 @@ JR.prototype = {
     //动画
     animation: {
         speedSet: {"slow": 10, "normal": 6, "fast": 3},
-        _cmpStyle: function (e) {
-            var e = (e.raw ? e.raw() : e);
-            return e.currentStyle || document.defaultView.getComputedStyle(e, null);
-        },
+        //_cmpStyle: function(e) {
+        //    return (e.raw ? e.raw() : e).computedStyle();
+        //var e = (e.raw ? e.raw() : e);
+        //return e.currentStyle || document.defaultView.getComputedStyle(e, null);
+        //},
         _titAttr: function (attr) {
             var arr = attr.split("-");
             for (var i = 1; i < arr.length; i++) {
@@ -559,27 +591,33 @@ JR.prototype = {
             if (typeof (speed) != "integer") {
                 speed = this.speedSet[speed || "normal"];
             }
+            // 记录上次的步进
+            var latest_setup = 0;
+            // 定时器动画
             var timer = setInterval(function () {
-                //当前长度
+                // 当前长度
                 var current = getFn();
-                //计算步长(速度),当除以10(speed)得到小数，舍入后为0时，停止运动
+                // 计算步长(速度),当除以10(speed)得到小数，舍入后为0时，停止运动
                 var setup = (target - current) / speed;
-                //如果步长大于0，则向上舍入，反之向下舍入
+                // 如果步长大于0，则向上舍入，反之向下舍入
                 setup = setup > 0 ? Math.floor(setup) : Math.ceil(setup);
-                //检测动画是否完成（步长为0)
-                if (Math.abs(setup) == 0) {
+                // 检查动画是否冲突,如果当前步进大于上次步进，则表示动画冲突
+                var conflict = latest_setup > 0 && latest_setup < Math.abs(setup);
+                // 检测动画是否完成（步长为0)
+                if (Math.abs(setup) == 0 || conflict) {
                     clearInterval(timer);
                     setFn(target);
                     if (callback instanceof Function) callback();
                 } else {
                     setFn(current + setup);
+                    latest_setup = Math.abs(setup);
                 }
             }, 20);
             return timer;
         },
         animate: function (elem, style, speed, callback) {
             var e = elem.raw ? elem.raw() : elem;
-            var srcStyle = this._cmpStyle(e);
+            var srcStyle = e.computedStyle();
             // 记录目标数值字典
             var attrMap = {};
             // 获取当前属性值
@@ -621,9 +659,15 @@ JR.prototype = {
             }
         },
         toggle: function (e, speed, callback) {
+            e = e.raw ? e.raw() : e;
             e.style["overflow"] = "hidden";
-            var width = e.scrollWidth;
-            var height = e.scrollHeight;
+            var arr = e.realEval(function (e) {
+                return [e.clientWidth, e.clientHeight]
+            });
+            var width = arr[0];
+            var height = arr[1];
+            //var width = e.scrollWidth;
+            //var height = e.scrollHeight;
             var opacity = 1;
             if (height == e.offsetHeight) {
                 width = 0;
@@ -647,22 +691,31 @@ JR.prototype = {
             this.fadeTo(e, 0, speed, callback);
         },
         fadeToggle: function (e, speed, callback) {
-            var c = this.cmpStyle(e);
-            var src = (e.raw ? e.raw() : e);
+            var src = e.raw ? e.raw() : e;
+            var c = src.computedStyle();
             var opacity = parseFloat(src.filters ?
                 src.filters["opacity"] : c["opacity"]);
-            this.fadeTo(e, opacity < 1 ? 1 : 0, speed, callback);
+            this.fadeTo(src, opacity < 1 ? 1 : 0, speed, callback);
         },
         slideDown: function (e, speed, callback) {
-            this.animate(e, {"height": (e.raw ? e.raw() : e).scrollHeight + "px"}, speed, callback);
+            var src = e.raw ? e.raw() : e;
+            var height = src.realEval(function (e) {
+                return e.clientHeight;
+            });
+            this.animate(src, {"height": height + "px"}, speed, callback);
+            //this.animate(e, { "height": (e.raw ? e.raw() : e).scrollHeight + "px" }, speed, callback);
         },
         slideUp: function (e, speed, callback) {
             this.animate(e, {"height": "0"}, speed, callback);
         },
         slideToggle: function (e, speed, callback) {
-            var height = (e.raw ? e.raw() : e).scrollHeight;
-            var offset = (e.raw ? e.raw() : e).offsetHeight;
-            this.animate(e, {
+            var src = e.raw ? e.raw() : e;
+            var height = src.realEval(function (e) {
+                return e.clientHeight;
+            });
+            //var height = (e.raw ? e.raw() : e).clientHeight;
+            var offset = src.offsetHeight;
+            this.animate(src, {
                 "height": (offset != height ? height : 0) + "px"
             }, speed, callback);
         }
@@ -674,18 +727,15 @@ JR.prototype.dom = {
     set: function (ptr) {
         this._b = ptr;
     },
-    id: function (id) {
-        return document.getElementById(id);
-    },
     fitHeight: function (e, offset) {
         var par = e.parentNode;
         var next = e.nextSibling;
         var reg = /;(\s*)height:(.+);/ig;
 
         var height = (
-            par == document.body
-                ? Math.max(document.body.clientHeight, document.documentElement.clientHeight)
-                : par.offsetHeight) - e.offsetTop;
+            par == document.body ?
+                Math.max(document.body.clientHeight, document.documentElement.clientHeight) :
+                par.offsetHeight) - e.offsetTop;
 
         while (next) {
             if (next.nodeName[0] != '#') {
@@ -725,31 +775,6 @@ JR.prototype.dom = {
             return arr[0];
         }
         return null;
-
-        //
-        // var e = el.nodeName ? el : document.getElementById(el || '');
-        // if (!e) throw el.nodeName ? 'object refrence null' : 'element ' + el + ' not exits!';
-        // if (!tagName) return e;
-        // e = e.getElementsByTagName(tagName);
-        // if (!attrs) return e;
-        // var arr = [];
-        // var attr_name;
-        // for (var i = 0; i < e.length; i++) {
-        //     var equalAttr = true;
-        //     for (var j in attrs) {
-        //         switch (j) {
-        //             case "className":
-        //                 attr_name = e[i].getAttribute("class") ? "class" : "className";
-        //                 break;
-        //             default:
-        //                 attr_name = j;
-        //                 break;
-        //         }
-        //         if (e[i].getAttribute(attr_name) != attrs[j]) equalAttr = false;
-        //         if (equalAttr) arr.push(e[i]);
-        //     }
-        // }
-        // return arr;
     },
     // 根据伪类查找元素
     getsByClass: function (ele, className) {
@@ -891,8 +916,8 @@ JR.prototype.xhr = {
         if (url == null || url == '') {
             url = location.href;
         }
-        if (reqMethod == 'GET' && getRandom != false
-            && url.indexOf('#') == -1) {
+        if (reqMethod == 'GET' && getRandom != false &&
+            url.indexOf('#') == -1) {
             url = this.urlJoin(url, 'rd=' + Math.random());
         }
         return url;
@@ -901,7 +926,7 @@ JR.prototype.xhr = {
     request: function (_request, call, opt) {
         //执行初始化
         this.init();
-        var method = (_request.method || "GET").toUpperCase();
+        var reqMethod = (_request.method || "GET").toUpperCase();
 
         //请求范例
         //xhr.request({uri:"/",method:"POST",params:"",data:"text"},
@@ -909,13 +934,13 @@ JR.prototype.xhr = {
         //x为返回的数据*/
         var reqArgs = {
             //是否缓存
-            uri: this.getUrl(_request.uri, method, _request.random),
+            uri: this.getUrl(_request.uri, reqMethod, _request.random),
             //请求参数
             //method为"POST"时适用
             //格式如:'action=delete&id=123'
             params: _request.params || '',
             //请求的方法,POST和GET,HEAD
-            method: method,
+            method: reqMethod,
             //是否异步
             async: _request.async === false ? false : _request.async || true,
             //返回数据格式,Text|XML
@@ -1003,8 +1028,7 @@ JR.prototype.xhr = {
         };
     },
     get: function (param, success, err) {
-        this.request(param instanceof Object ? this.getUrl(param) :
-            {uri: param}, this._callback(success, err));
+        this.request(param instanceof Object ? this.getUrl(param) : {uri: param}, this._callback(success, err));
     },
     post: function (uri, param, success, err) {
         this.request({uri: uri, method: 'POST', params: param},
@@ -1090,7 +1114,7 @@ JR.prototype.ldScript = function (scriptUrl, loadfunc, errorfunc) {
     }
     if (!loadFlag) {
         var script = document.createElement('SCRIPT');
-        if (loadfunc) script.onreadystatechange = script.onload = loadfunc;       //IE ReadStateChange
+        if (loadfunc) script.onreadystatechange = script.onload = loadfunc; //IE ReadStateChange
         if (errorfunc) script.onerror = errorfunc;
         script.setAttribute('type', 'text/javascript');
         script.setAttribute('src', scriptUrl);
@@ -1099,9 +1123,7 @@ JR.prototype.ldScript = function (scriptUrl, loadfunc, errorfunc) {
 };
 
 var $jr = new JR().__init__();
-if (module) {
-    module.exports = $jr;
-}
+if (module) module.exports = $jr;
 //初始化
 $jr.extend({
     $: function (el, tagName, attrs) {
@@ -1172,8 +1194,8 @@ $jr.extend({
         var jsSection;
         scriptReg.lastIndex = 0;
         while ((jsSection = scriptReg.exec(html)) != null) {
-            if (jsSection[1].indexOf(' type=') == -1
-                || regType.test(jsSection[1])) {
+            if (jsSection[1].indexOf(' type=') == -1 ||
+                regType.test(jsSection[1])) {
                 if (!spaceReg.test(jsSection[3])) { //不全为空
                     this.eval(jsSection[3]);
                 }
@@ -1253,3 +1275,15 @@ $jr.extend({
 })(window.define);
 
 
+//Require.JS
+(function (r) {
+    var o = $jr;
+    if (r) {
+        r(function () {
+            return o;
+        });
+    } else {
+        window.$b = o;
+        window.jr = o;
+    }
+})(window.define);
