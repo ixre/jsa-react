@@ -4,6 +4,7 @@ import Input from "antd/es/input";
 import Button from "antd/es/button";
 import PropTypes from "prop-types";
 import Switch from "antd/es/switch";
+import TextArea from "antd/es/input/TextArea";
 
 const formItemLayout = {
     labelCol: {span: 4},
@@ -39,64 +40,37 @@ class DomainForm extends React.Component {
     render() {
         const {saveText} = this.props;
         const {getFieldDecorator} = this.props.form;
-
         return <React.Fragment>
             <Form onSubmit={this.handleSubmit.bind(this)}>
-                <Form.Item {...formItemLayout} label="用户">
-                    {getFieldDecorator('user', {
-                        initialValue: this.props.values["user"],
+                <Form.Item {...formItemLayout} label="域名">
+                    {getFieldDecorator('domain', {
+                        initialValue: this.props.values["domain"],
                         rules: [{
                             required: true,
-                            message: '请填写用户',
+                            message: '请填写域名',
                         }],
                     })(
-                        <Input placeholder="填写登陆用户名，不可更改"/>
+                        <Input placeholder="如：to2.net；不用输入http://"/>
                     )}
                 </Form.Item>
 
-                <Form.Item {...formItemLayout} label="密码">
-                    {getFieldDecorator('pwd', {
-                        initialValue: this.props.values["pwd"],
+
+                <Form.Item {...formItemLayout} label="备注">
+                    {getFieldDecorator('notes', {
+                        initialValue: this.props.values["notes"],
                         rules: [{
-                            required: true,
-                            message: '请填写密码',
-                        }, {
-                            validator: this.validatePassword,
+                            required: false,
+                            message: '请填写备注',
                         }],
                     })(
-                        <Input type="password" placeholder="至少6位字母或数字的组合"/>
+                        <TextArea/>
                     )}
                 </Form.Item>
 
-                <Form.Item {...formItemLayout} label="昵称">
-                    {getFieldDecorator('name', {
-                        initialValue: this.props.values["name"],
-                        rules: [{
-                            required: true,
-                            message: '请填写昵称',
-                        }],
-                    })(
-                        <Input/>
-                    )}
-                </Form.Item>
-
-                <Form.Item {...formItemLayout} label="电子邮箱">
-                    {getFieldDecorator('email', {
-                        initialValue: this.props.values["email"],
-                        rules: [
-                            {type: 'email', message: "不是有效的电子邮箱"},
-                            {
-                                required: true,
-                                message: '请填写电子邮箱',
-                            }],
-                    })(
-                        <Input placeholder=""/>
-                    )}
-                </Form.Item>
 
                 <Form.Item{...formItemLayout} label="是否启用">
-                    {getFieldDecorator('enabled', {
-                        initialValue: this.props.values["enabled"],
+                    {getFieldDecorator('state', {
+                        initialValue: this.props.values["state"],
                         valuePropName: 'checked'
                     })(
                         <Switch/>

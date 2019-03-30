@@ -27,6 +27,11 @@ export class AuthenticationWrapper extends React.Component {
             http.jsonPost(fn.api("/check_session"), {}, function (r) {
                 if (!r.code) {
                     store.isLogin = true;
+                    store.sessionID = r["SessionId"];
+                    store.user = {
+                        userId: r["UserId"],
+                        isSuper: r["SuperUser"] == "1"
+                    };
                     t.hasLogin();
                 } else {
                     t.props.history.push("/login");

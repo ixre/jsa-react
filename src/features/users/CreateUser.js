@@ -30,7 +30,7 @@ export class CreateUser extends React.Component {
 
     render() {
         return <React.Fragment>
-            <UserForm value={this.value} saveText="创建" onSubmit={this.onSubmit.bind(this)}/>
+            <UserForm values={this.state.value} saveText="创建" onSubmit={this.onSubmit.bind(this)}/>
         </React.Fragment>;
     }
 }

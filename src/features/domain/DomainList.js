@@ -93,11 +93,11 @@ export class DomainList extends React.Component {
     }
 
     onCreate() {
-        this.props.history.push("/users/new");
+        this.props.history.push("/domain/new");
     }
 
     onEdit(key) {
-        this.props.history.push("/users/edit/" + key);
+        this.props.history.push("/domain/edit/" + key);
     }
 
     onDelete() {

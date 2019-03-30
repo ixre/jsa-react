@@ -2,7 +2,9 @@ import React from "react";
 import DomainForm from "./DomainForm";
 import {fn, http} from "../../base";
 import {Modal} from "../../components/common";
+import {observer, PropTypes} from "mobx-react";
 
+@observer
 export class EditDomain extends React.Component {
     constructor(props) {
         super(props);
@@ -11,9 +13,17 @@ export class EditDomain extends React.Component {
         };
     }
 
+    static contextTypes = {
+        store: PropTypes.observableObject
+    };
+
     componentDidMount() {
         let key = this.props.match.params.id;
         let t = this;
+
+        const {store} = this.context;
+        values.user_id = store.user.userId;
+        values.state = values.state?1:0;
         http.jsonPost(fn.api("/user/get?user=" + key), {}, function (r) {
             //r.enabled = (r.flag & USER_FLAG.Enabled) == USER_FLAG.Enabled;
             t.setState({value: r});

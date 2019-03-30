@@ -33,8 +33,9 @@ export default class LoginPage extends React.Component {
             callback();
             if (!r.code) {
                 store.isLogin = true;
-                store.sessionID = r.data["SessionID"];
+                store.sessionID = r.data["SessionId"];
                 store.user = {
+                    userId:r.data["UserId"],
                     isSuper: r.data["SuperUser"] == "1"
                 };
                 $this.props.history.push("/home");
