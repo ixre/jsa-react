@@ -20,10 +20,10 @@ export class EditDomain extends React.Component {
     componentDidMount() {
         let key = this.props.match.params.id;
         let t = this;
-
         const {store} = this.context;
         values.user_id = store.user.userId;
         values.state = values.state?1:0;
+        values.id = key;
         http.jsonPost(fn.api("/user/get?user=" + key), {}, function (r) {
             //r.enabled = (r.flag & USER_FLAG.Enabled) == USER_FLAG.Enabled;
             t.setState({value: r});

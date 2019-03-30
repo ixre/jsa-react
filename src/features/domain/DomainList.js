@@ -31,8 +31,8 @@ export class DomainList extends React.Component {
     }
 
     // 定义列
-    rowKey = r => r.user;
-    searchHolder = "用户/邮箱";
+    rowKey = r => r.id;
+    searchHolder = "关键词";
     columns = [{
         title: '域名',
         dataIndex: 'domain',
@@ -104,7 +104,7 @@ export class DomainList extends React.Component {
         Modal.confirm(null, "删除后无法恢复，确定要删除吗？", (() => {
             return (r) => {
                 if (!r) return;
-                http.jsonPost(fn.api("/user/delete"), {
+                http.jsonPost(fn.api("/domain/delete"), {
                     "keys": this.state.checkedRowKeys
                 }, (r) => {
                     this.refresh();

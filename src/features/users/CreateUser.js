@@ -9,6 +9,7 @@ export class CreateUser extends React.Component {
         super(props);
         this.state = {
             value: {
+                enabled:true,
                 flag:USER_FLAG.Enabled
             }
         };
@@ -20,8 +21,8 @@ export class CreateUser extends React.Component {
         http.jsonPost(fn.api("/user/save"), values, function (r) {
             if (!r.code) {
                 Modal.success("提示", "新增成功", () => {
-                    t.props.history.push("..");
-                });
+                    t.props.history.push(".");
+                })
             } else {
                 Modal.error("新增失败:" + r["err_msg"]);
             }
