@@ -6,9 +6,15 @@ import {Modal} from "../../components/common";
 import Button from "antd/es/button";
 import Search from "antd/es/input/Search";
 import {withRouter} from "react-router-dom";
+import Divider from "antd/es/divider";
+import {observer,PropTypes} from "mobx-react";
 
 @withRouter
+@observer
 export class DomainList extends React.Component {
+    static contextTypes = {
+        store:PropTypes.observableObject
+    };
     constructor(props) {
         super(props);
         this.state = {
@@ -59,8 +65,11 @@ export class DomainList extends React.Component {
         title: '操作',
         dataIndex: '',
         render: (_, row) => {
-            // <Divider type="vertical"/>
-            return <a href="javascript:;" onClick={this.onEdit.bind(this, this.rowKey(row))}>更新</a>;
+            return <React.Fragment>
+                <a href="javascript:;" onClick={this.onEdit.bind(this, this.rowKey(row))}>更新</a>
+                <Divider type="vertical"/>
+                <a href="javascript:;" onClick={this.onStatCode.bind(this, row.hash)}>统计代码</a>
+            </React.Fragment>;
         }
     }];
 
@@ -73,6 +82,9 @@ export class DomainList extends React.Component {
                 this.setState({reload: false, loading: false});
             };
         }).apply(this);
+        // Attach user info
+        const {store} = this.context;
+        params.user_id = store.user.userId;
         // Attach some params from page
         params.keyword = this.state.searchValue;
         // Send fetch request
@@ -113,6 +125,10 @@ export class DomainList extends React.Component {
                 });
             };
         }).apply(this));
+    }
+
+    onStatCode(key){
+        this.props.history.push("/domain/stat_code/" + key);
     }
 
     render() {

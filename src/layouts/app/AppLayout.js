@@ -7,6 +7,7 @@ import Col from "antd/es/grid/col";
 import Row from "antd/es/grid/row";
 import {fn, http} from "../../base";
 import AppBreadcrumb from "./AppBreadcrumb";
+import {observer,PropTypes} from "mobx-react";
 
 const {Header, Content, Sider} = Layout;
 const SubMenu = Menu.SubMenu;
@@ -21,10 +22,12 @@ let Logo = (props) => {
 
 
 @withRouter
+@observer
 export class AppLayout extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            isSuper : false,
             collapsed: false,
             name: "",
             version: "",
@@ -35,7 +38,16 @@ export class AppLayout extends React.Component {
         };
     }
 
+    static contextTypes = {
+        store: PropTypes.observableObject
+    };
+
     componentDidMount() {
+        // 控制管理员和普通用户显示
+        let {store} = this.context;
+        let isSuper = store.user.isSuper;
+        this.setState({isSuper:isSuper});
+        // 获取系统信息
         let t = this;
         http.jsonPost(fn.api("/initial"), {}, function (r) {
             t.setState({
@@ -73,14 +85,16 @@ export class AppLayout extends React.Component {
                             <Icon type="menu-unfold" />
                             <span>域名</span>
                         </Menu.Item>
-                        <Menu.Item key="menu-users" onClick={this.assignUrl.bind(this, "/users")}>
+                        {this.state.isSuper?
+                            <Menu.Item key="menu-users" onClick={this.assignUrl.bind(this, "/users")}>
                             <Icon type="user"/>
                             <span>用户</span>
-                        </Menu.Item>
+                            </Menu.Item>:""
+                        }
                         <SubMenu
                             key="sub1"
-                            title={<span><Icon type="pie-chart"/><span>报表</span></span>}>
-                            <Menu.Item key="3" onClick={this.assignUrl.bind(this, "/home/next")}>点击量统计</Menu.Item>
+                            title={<span><Icon type="pie-chart"/><span>统计</span></span>}>
+                            <Menu.Item key="3" onClick={this.assignUrl.bind(this, "/home/next")}>访客来源管理</Menu.Item>
                             <Menu.Item key="4" onClick={this.assignUrl.bind(this, "/home/next")}>月分析统计</Menu.Item>
                             <Menu.Item key="5" onClick={this.assignUrl.bind(this, "/home/next")}>日分析统计</Menu.Item>
                         </SubMenu>
