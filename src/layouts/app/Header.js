@@ -4,7 +4,7 @@ import Col from "antd/es/grid/col";
 import Row from "antd/es/grid/row";
 import {Dropdown, Icon, Menu, Modal} from 'antd';
 import {observer, PropTypes} from "mobx-react";
-import {fn, http} from "../../base";
+import {fn, httpcli} from "../../base";
 
 const UserFlag = ({flag}) => {
     if (flag & 2 == 2) {
@@ -37,7 +37,7 @@ export class Header extends React.Component {
         let fh = () => {
             this.store.isLogin = false;
             let history = this.props.history;
-            http.jsonPost(fn.api("/logout"), {}, function () {
+            httpcli.jsonPost(fn.api("/logout"), {}, function () {
                 history.push("/login");
             });
         };
@@ -59,7 +59,7 @@ export class Header extends React.Component {
             </Menu.Item>
             <Menu.Divider/>
             <Menu.Item key="2">
-                <a target="_blank" rel="noopener noreferrer" href="http://github.com/jsix/jsa">Source code</a>
+                <a target="_blank" rel="noopener noreferrer" href="httpcli://github.com/jsix/jsa">Source code</a>
             </Menu.Item>
         </Menu>
     );
@@ -77,12 +77,12 @@ export class Header extends React.Component {
                 </Dropdown>
                 </Col>
                 <Col span={3} align="left">
-                    <a className="app-header-fork" href="http://github.com/jsix/jsa/fork" target="_blank">
+                    <a className="app-header-fork" href="httpcli://github.com/jsix/jsa/fork" target="_blank">
                         <Icon type="fork"/>&nbsp;<span>Fork</span>
                     </a>
                 </Col>
                 <Col span={3} align="left">
-                    <a className="app-header-fork" href="http://github.com/jsix/jsa#jsa" target="_blank">
+                    <a className="app-header-fork" href="httpcli://github.com/jsix/jsa#jsa" target="_blank">
                         <span>帮助?</span>
                     </a>
                 </Col>
